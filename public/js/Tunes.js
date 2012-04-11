@@ -2,11 +2,11 @@
 
     window.Album = Backbone.Model.extend({
         isFirstTrack: function(index) {
-            return index == 0;
+            return (index == 0);
         },
 
         isLastTrack: function(index) {
-            return index >= this.get('tracks').length - 1;
+            return (index >= this.get('tracks').length - 1);
         },
 
         trackUrlAtIndex: function(index) {
@@ -30,6 +30,44 @@
         isLastAlbum: function(index) {
             return (index == this.length - 1);
         }
+    });
+
+    window.Player = Backbone.Model.extend({
+        defaults: {
+            'currentAlbumIndex': 0,
+            'currentTrackIndex': 0,
+            'state': 'stop'
+        },
+
+        initialize: function() {
+            this.playlist = new Playlist();
+        },
+
+        play: function() {
+            this.set({'state': 'play'});
+        },
+
+        pause: function() {
+            this.set({'state': 'pause'});
+        },
+
+        isPlaying: function() {
+            return (this.get('state') == 'play');
+        },
+
+        isStopped: function() {
+            return (!this.isPlaying());
+        },
+
+        currentAlbum: function() {
+            return this.playlist.at(this.get('currentAlbumIndex'));
+        },
+
+        currentTrack: function() {
+            var album = this.currentAlbum();
+            return album.trackUrlAtIndex(this.get('currentTrackIndex'));
+        }
+
     });
 
     window.library = new Albums();
